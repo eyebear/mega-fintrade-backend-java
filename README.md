@@ -1,6 +1,6 @@
-# Portfolio Risk Platform
+# mega-fintrade-backend-java
 
-A Spring Boot backend service for managing stock positions and calculating profit & loss (PnL).
+Java Spring Boot backend for the Mega Fintrade Platform. This service stores portfolio positions, market data, backtest results, and risk reports, and exposes REST APIs for reporting and monitoring.
 
 This project demonstrates a production-style backend architecture with REST APIs, database integration, containerization, and CI automation.
 
@@ -187,3 +187,4 @@ CI status is visible under the **Actions** tab.
 
 ---
 
+# mega-fintrade-backend-java

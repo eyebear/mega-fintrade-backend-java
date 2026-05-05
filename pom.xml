@@ -10,9 +10,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ao</groupId>
-	<artifactId>portfolio</artifactId>
+	<artifactId>mega-fintrade-backend-java</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>PortfolioRiskPlatform</name>
+	<name>mega-fintrade-backend-java</name>
 	<description />
 	<url />
 	<licenses>
