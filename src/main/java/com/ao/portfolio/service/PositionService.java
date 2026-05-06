@@ -1,5 +1,6 @@
 package com.ao.portfolio.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ public class PositionService {
         Position position = new Position();
         position.setSymbol(request.getSymbol());
         position.setQuantity(request.getQuantity());
-        position.setAvgPrice(request.getAvgPrice());
+        position.setAvgPrice(BigDecimal.valueOf(request.getAvgPrice()));
 
         Position saved = positionRepository.save(position);
         return toResponse(saved);
@@ -43,7 +44,7 @@ public class PositionService {
                     Position position = new Position();
                     position.setSymbol(request.getSymbol());
                     position.setQuantity(request.getQuantity());
-                    position.setAvgPrice(request.getAvgPrice());
+                    position.setAvgPrice(BigDecimal.valueOf(request.getAvgPrice()));
                     return position;
                 })
                 .collect(Collectors.toList());
@@ -67,7 +68,13 @@ public class PositionService {
     }
 
     public double calculatePnL(Position position, double currentPrice) {
-        return (currentPrice - position.getAvgPrice()) * position.getQuantity();
+        BigDecimal currentPriceValue = BigDecimal.valueOf(currentPrice);
+
+        BigDecimal pnl = currentPriceValue
+                .subtract(position.getAvgPrice())
+                .multiply(BigDecimal.valueOf(position.getQuantity()));
+
+        return pnl.doubleValue();
     }
 
     private PositionResponse toResponse(Position position) {
@@ -75,7 +82,7 @@ public class PositionService {
                 position.getId(),
                 position.getSymbol(),
                 position.getQuantity(),
-                position.getAvgPrice()
+                position.getAvgPrice().doubleValue()
         );
     }
 }

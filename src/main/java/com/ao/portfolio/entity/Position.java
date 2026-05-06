@@ -1,28 +1,42 @@
 package com.ao.portfolio.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import java.math.BigDecimal;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 @Entity
+@Table(name = "positions")
 public class Position {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "Symbol is required")
+    @Size(max = 20, message = "Symbol must not exceed 20 characters")
+    @Column(nullable = false, length = 20)
     private String symbol;
 
-    @Positive
+    @Positive(message = "Quantity must be greater than zero")
+    @Column(nullable = false)
     private int quantity;
 
-    @Positive
-    private double avgPrice;
+    @Positive(message = "Average price must be greater than zero")
+    @Column(name = "avg_price", nullable = false, precision = 19, scale = 4)
+    private BigDecimal avgPrice;
 
     public Position() {
     }
 
-    public Position(String symbol, int quantity, double avgPrice) {
+    public Position(String symbol, int quantity, BigDecimal avgPrice) {
         this.symbol = symbol;
         this.quantity = quantity;
         this.avgPrice = avgPrice;
@@ -48,11 +62,11 @@ public class Position {
         this.quantity = quantity;
     }
 
-    public double getAvgPrice() {
+    public BigDecimal getAvgPrice() {
         return avgPrice;
     }
 
-    public void setAvgPrice(double avgPrice) {
+    public void setAvgPrice(BigDecimal avgPrice) {
         this.avgPrice = avgPrice;
     }
 }
