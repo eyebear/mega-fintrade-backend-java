@@ -1,190 +1,238 @@
 # mega-fintrade-backend-java
 
-Java Spring Boot backend for the Mega Fintrade Platform. This service stores portfolio positions, market data, backtest results, and risk reports, and exposes REST APIs for reporting and monitoring.
+[![Java CI](https://github.com/eyebear/mega-fintrade-backend-java/actions/workflows/ci.yml/badge.svg)](https://github.com/eyebear/mega-fintrade-backend-java/actions/workflows/ci.yml)
 
-This project demonstrates a production-style backend architecture with REST APIs, database integration, containerization, and CI automation.
+Java Spring Boot backend for the Mega Fintrade Platform. This service provides REST APIs for portfolio positions, profit and loss calculation, batch position operations, and future risk reporting services.
+
+This project is part of the larger Mega Fintrade Platform and will later integrate with the Python quantitative analytics engine, the C++ market data processing engine, and the C# monitoring service.
 
 ---
 
 ## Overview
 
+The backend currently supports core portfolio position management.
+
 The system allows users to:
 
-* Store stock positions
-* Retrieve portfolio data
-* Calculate profit and loss (PnL)
-* Perform batch operations
-* Validate input data
+- Store stock positions
+- Retrieve portfolio positions
+- Retrieve a position by ID
+- Create positions in batch
+- Calculate profit and loss based on a supplied market price
+- Validate input data
+- Run automated tests through Maven and GitHub Actions
 
-Designed as a **portfolio-ready backend project** showcasing real-world engineering practices.
+The project is designed as a production-style Java backend with a clean layered architecture.
 
 ---
 
 ## Tech Stack
 
-* Java 21
-* Spring Boot
-* Spring Web (REST API)
-* Spring Data JPA
-* PostgreSQL (production database)
-* H2 (test database)
-* Maven
-* Docker & Docker Compose
-* GitHub Actions (CI)
+- Java 17
+- Spring Boot
+- Spring Web
+- Spring Data JPA
+- Hibernate
+- PostgreSQL for application persistence
+- H2 in-memory database for tests
+- Maven
+- Docker
+- Docker Compose
+- GitHub Actions CI
 
 ---
 
 ## Project Structure
 
-```
-src/main/java/com/ao/portfolio
-├── controller        # REST endpoints
-├── service           # business logic
-├── repository        # database access
-├── entity            # JPA entities
-├── dto               # request/response models
-├── exception         # custom exceptions
-```
+    src/main/java/com/ao/portfolio
+    ├── PortfolioRiskPlatformApplication.java
+    ├── controller
+    ├── service
+    ├── repository
+    ├── entity
+    ├── dto
+    └── exception
+
+Main responsibility of each layer:
+
+- controller: exposes REST API endpoints
+- service: contains business logic
+- repository: handles database access through Spring Data JPA
+- entity: defines database-backed domain models
+- dto: defines request and response objects
+- exception: handles application-specific error cases
 
 ---
 
-## API Endpoints
+## Current API Endpoints
 
-### 1. Get all positions
+### Get all positions
 
-```
-GET /positions
-```
+    GET /positions
 
----
+### Create one position
 
-### 2. Create a position
+    POST /positions
 
-```
-POST /positions
-```
+Example request body:
 
-Request body:
+    {
+      "symbol": "AAPL",
+      "quantity": 10,
+      "avgPrice": 150
+    }
 
-```json
-{
-  "symbol": "AAPL",
-  "quantity": 10,
-  "avgPrice": 150
-}
-```
+### Create positions in batch
 
----
+    POST /positions/batch
 
-### 3. Batch create positions
+Example request body:
 
-```
-POST /positions/batch
-```
+    [
+      {
+        "symbol": "MSFT",
+        "quantity": 5,
+        "avgPrice": 300
+      },
+      {
+        "symbol": "GOOGL",
+        "quantity": 3,
+        "avgPrice": 120
+      }
+    ]
 
-```json
-[
-  {
-    "symbol": "MSFT",
-    "quantity": 5,
-    "avgPrice": 300
-  },
-  {
-    "symbol": "GOOGL",
-    "quantity": 3,
-    "avgPrice": 120
-  }
-]
-```
+### Get position by ID
 
----
-
-### 4. Get position by ID
-
-```
-GET /positions/{id}
-```
-
----
-
-### 5. Calculate PnL
-
-```
-GET /positions/{id}/pnl/{price}
-```
+    GET /positions/{id}
 
 Example:
 
-```
-GET /positions/1/pnl/160
-```
+    GET /positions/1
+
+### Calculate profit and loss
+
+    GET /positions/{id}/pnl/{price}
+
+Example:
+
+    GET /positions/1/pnl/160
 
 ---
 
-## Running the Application
+## Running the Application Locally
 
-### Option 1 — Run locally (without Docker)
+### Option 1: Run with Maven
 
-1. Start PostgreSQL
-2. Configure database in `application.properties`
-3. Run:
+Start the application:
 
-```bash
-mvn spring-boot:run
-```
+    ./mvnw spring-boot:run
 
----
+The application runs on:
 
-### Option 2 — Run with Docker Compose (recommended)
+    http://localhost:8080
 
-```bash
-docker compose up --build
-```
+Example endpoint:
+
+    http://localhost:8080/positions
+
+### Option 2: Run with Docker Compose
+
+Build and start the application:
+
+    docker compose up --build
 
 Then access:
 
-```
-http://localhost:8080/positions
-```
+    http://localhost:8080/positions
 
 ---
 
 ## Running Tests
 
-```bash
-mvn test
-```
+Run all tests:
 
-Tests use **H2 in-memory database**, so no PostgreSQL setup is required.
+    ./mvnw test
+
+Run a full clean build:
+
+    ./mvnw clean package
+
+Run full verification:
+
+    ./mvnw clean verify
+
+Tests use the H2 in-memory database, so PostgreSQL is not required for the test environment.
 
 ---
 
-## CI (Continuous Integration)
+## Continuous Integration
 
 This project uses GitHub Actions.
 
-On every push:
+The CI workflow runs automatically on pushes and pull requests to:
 
-* Project builds automatically
-* Tests run automatically
+- main
+- master
 
-CI status is visible under the **Actions** tab.
+The workflow performs the following checks:
+
+- checks out the repository
+- sets up Java 17
+- restores Maven dependency cache
+- runs Maven verification using:
+
+    mvn clean verify
+
+The CI status is shown by the badge at the top of this README.
 
 ---
 
 ## Key Features
 
-* RESTful API design
-* Layered architecture (Controller → Service → Repository)
-* DTO pattern (separating API and database models)
-* Input validation
-* Exception handling
-* Database persistence (PostgreSQL)
-* In-memory testing (H2)
-* Dockerized deployment
-* Multi-container setup (Docker Compose)
-* Automated CI pipeline
+- RESTful API design
+- Layered Spring Boot architecture
+- Controller, service, repository separation
+- JPA-based database persistence
+- DTO-based request and response handling
+- Input validation
+- Exception handling
+- H2-based automated tests
+- Dockerized backend setup
+- Docker Compose support
+- GitHub Actions CI pipeline
 
 ---
 
-# mega-fintrade-backend-java
+## Role in the Mega Fintrade Platform
+
+This repository is Project 1 of the Mega Fintrade Platform.
+
+Its long-term purpose is to become the central Java backend service that will:
+
+- store portfolio positions
+- store cleaned market data
+- store strategy signals
+- store backtest results
+- expose portfolio summary APIs
+- expose risk reporting APIs
+- provide data to the C# monitoring service
+
+Future integrations will connect this backend with:
+
+- mega-fintrade-quant-engine
+- mega-fintrade-market-engine-cpp
+- future Mega Fintrade monitoring service
+
+---
+
+## Repository
+
+Repository URL:
+
+    https://github.com/eyebear/mega-fintrade-backend-java
+
+---
+
+## License
+
+MIT License
