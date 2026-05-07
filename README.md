@@ -4,28 +4,60 @@
 
 Java Spring Boot backend for the Mega Fintrade Platform.
 
-This service is Project 1 of the Mega Fintrade Platform. It acts as the central backend that stores portfolio, import, batch, strategy, risk, backtest, and report data. It exposes REST APIs, imports CSV outputs from the quantitative engine, stores audit and rejection records, and provides report summary endpoints for future monitoring and dashboard services.
+This service is Project 1 of the Mega Fintrade Platform. It acts as the central backend that stores portfolio positions, quant import results, strategy signals, risk metrics, backtest results, portfolio equity curve data, import audit history, rejected CSV rows, and report summary data.
+
+The backend exposes REST APIs, imports CSV outputs from the Python quantitative engine, supports Spring Batch import execution, runs scheduled backend jobs, records import audit information, logs invalid CSV records, and provides reporting endpoints for future monitoring and dashboard services.
 
 ---
 
-## Overview
+## Project Purpose
 
-The backend currently supports:
+The purpose of this project is to provide a production-style Java backend for a multi-project financial trading and reporting platform.
 
-- Portfolio position management
-- Position profit and loss calculation
-- Batch position operations
-- Quant CSV import
-- Spring Batch-based import execution
-- Scheduled quant import jobs
-- Scheduled report recalculation jobs
-- Import audit history
-- Rejected CSV record logging
-- Report summary APIs
-- Automated testing with Maven, H2, and GitHub Actions
-- Dockerized runtime with PostgreSQL
+In the Mega Fintrade Platform, this backend is responsible for:
 
-This project is designed as a production-style Java backend with a clean layered architecture.
+- Receiving processed quant output files from the Python quant engine.
+- Persisting imported risk, strategy, backtest, and equity curve data.
+- Providing REST APIs for portfolio data and financial reports.
+- Running scheduled import and report refresh jobs.
+- Recording audit history for import runs.
+- Recording rejected CSV rows for debugging and data quality checks.
+- Providing a stable backend foundation for future dashboard and monitoring services.
+
+This project demonstrates backend engineering skills using Java, Spring Boot, REST APIs, JPA, PostgreSQL, Spring Batch, scheduling, testing, CI, Docker, and Docker Compose.
+
+---
+
+## Role in the Mega Fintrade Platform
+
+The Mega Fintrade Platform is designed as a multi-language, multi-service financial system.
+
+This repository is:
+
+    Project 1 — Java Portfolio Risk Reporting and ETL Platform
+
+Its role is to act as the central backend.
+
+Other related projects include:
+
+| Project | Repository / Purpose |
+|---|---|
+| Project 1 | Java backend for storage, import, reporting, scheduling, and APIs |
+| Project 2 | Python quantitative backtesting and analytics engine |
+| Project 3 | C++ market data processing engine |
+| Project 4 | Future C# monitoring and alerting service |
+
+The intended data flow is:
+
+    Project 3 C++ market engine
+        ↓
+    Project 2 Python quant engine
+        ↓
+    Project 1 Java backend
+        ↓
+    Project 4 monitoring / dashboard services
+
+At the current stage, Project 1 consumes CSV files produced by Project 2.
 
 ---
 
@@ -38,9 +70,12 @@ This project is designed as a production-style Java backend with a clean layered
 - Hibernate
 - Spring Batch
 - Spring Scheduling
-- PostgreSQL for application persistence
+- PostgreSQL
 - H2 in-memory database for tests
 - Maven Wrapper
+- JUnit
+- AssertJ
+- MockMvc
 - Docker
 - Docker Compose
 - GitHub Actions CI
@@ -51,29 +86,77 @@ This project is designed as a production-style Java backend with a clean layered
 
     src/main/java/com/ao/portfolio
     ├── PortfolioRiskPlatformApplication.java
-    ├── controller
-    ├── service
-    ├── repository
-    ├── entity
-    ├── dto
     ├── config
+    ├── controller
+    ├── dto
+    ├── entity
+    ├── exception
+    ├── repository
     ├── scheduler
-    └── exception
+    └── service
 
-Main responsibility of each layer:
+Main responsibility of each package:
 
-- `controller`: exposes REST API endpoints
-- `service`: contains business logic
-- `repository`: handles database access through Spring Data JPA
-- `entity`: defines database-backed domain models
-- `dto`: defines request and response objects
-- `config`: contains application and batch configuration
-- `scheduler`: contains scheduled backend jobs
-- `exception`: handles application-specific error cases
+| Package | Purpose |
+|---|---|
+| `controller` | Exposes REST API endpoints |
+| `service` | Contains business logic and import logic |
+| `repository` | Handles database access through Spring Data JPA |
+| `entity` | Defines database-backed domain models |
+| `dto` | Defines API request and response objects |
+| `config` | Contains Spring and batch configuration |
+| `scheduler` | Contains scheduled backend jobs |
+| `exception` | Contains application-specific exception handling |
 
 ---
 
-## Current API Endpoints
+## Main Features
+
+The backend currently supports:
+
+- Portfolio position management
+- Position profit and loss calculation
+- Batch position operations
+- Quant CSV import
+- Spring Batch import execution
+- Scheduled quant import job
+- Scheduled report recalculation job
+- Import audit history
+- Rejected CSV record logging
+- Report summary API
+- Repository, service, controller, and batch tests
+- H2-based CI test configuration
+- Docker runtime packaging
+- Docker Compose setup with PostgreSQL
+
+---
+
+## Quant CSV Input Files
+
+The backend imports CSV files from:
+
+    data/input
+
+Expected files:
+
+    data/input/risk_metrics.csv
+    data/input/backtest_results.csv
+    data/input/strategy_signals.csv
+    data/input/portfolio_equity_curve.csv
+
+These files are expected to come from:
+
+    mega-fintrade-quant-engine
+
+The current strategy signal import is scoped to the configured Project 2 symbol universe. Dynamic symbol support is intentionally left for a future version.
+
+For detailed CSV format documentation, see:
+
+    docs/csv-input-contract.md
+
+---
+
+## REST API Documentation
 
 ### Position APIs
 
@@ -162,32 +245,38 @@ Get portfolio report summary:
 
 ---
 
-## Quant CSV Input Files
+## Postman Testing
 
-The backend imports CSV files from:
+For detailed Postman examples, see:
 
-    data/input
+    docs/api-postman-examples.md
 
-Expected files:
+Common test requests:
 
-    data/input/risk_metrics.csv
-    data/input/backtest_results.csv
-    data/input/strategy_signals.csv
-    data/input/portfolio_equity_curve.csv
+| Purpose | Method | URL |
+|---|---|---|
+| View report summary | GET | `http://localhost:8080/api/reports/summary` |
+| Import all quant CSV files | POST | `http://localhost:8080/api/import/all` |
+| View import audit history | GET | `http://localhost:8080/api/import/audit` |
+| View rejected CSV records | GET | `http://localhost:8080/api/import/rejections` |
+| Run Spring Batch import | POST | `http://localhost:8080/api/batch/run` |
+| View positions | GET | `http://localhost:8080/api/positions` |
+| Create position | POST | `http://localhost:8080/api/positions` |
 
-The current strategy signal import is scoped to the configured Project 2 symbol universe. A future version may normalize strategy signals into one row per date and symbol to support a dynamic stock universe.
+For import endpoints, use:
+
+    Body: none
 
 ---
 
-## Running the Application Locally
+## Running the Application Locally with Maven Wrapper
 
 ### Requirements
 
 - Java 17
-- Maven Wrapper included in the repository
 - PostgreSQL running locally
 - Database named `portfolio_db`
-- Database user and password matching `src/main/resources/application.properties`
+- Database username and password matching `src/main/resources/application.properties`
 
 ### Start the application
 
@@ -205,7 +294,7 @@ Example endpoint:
 
 ---
 
-## Running Tests
+## Maven Wrapper Commands
 
 Run all tests:
 
@@ -215,17 +304,39 @@ Run a clean test suite:
 
     ./mvnw clean test
 
-Run a full package build:
+Package the application:
 
     ./mvnw clean package
 
-Tests use the H2 in-memory database through:
+Run the application:
+
+    ./mvnw spring-boot:run
+
+The project uses Maven Wrapper. Use `./mvnw` instead of relying on a globally installed Maven version.
+
+---
+
+## Testing
+
+The project includes tests for:
+
+- Repository and entity mappings
+- CSV import services
+- CSV validation and rejection logging
+- Report summary service
+- REST controllers
+- Batch runner service
+- Spring Boot application context
+
+Tests use H2 in-memory database through:
 
     src/test/resources/application.properties
 
-PostgreSQL is not required for the test environment.
+The test configuration disables scheduled jobs to avoid background imports interfering with automated tests.
 
-The test configuration disables scheduled jobs so background imports do not interfere with automated tests.
+Run tests:
+
+    ./mvnw clean test
 
 ---
 
@@ -367,6 +478,47 @@ This separates the three environments:
 
 ---
 
+## Eclipse Setup
+
+For Eclipse setup instructions, see:
+
+    docs/eclipse-setup.md
+
+Summary:
+
+1. Open Eclipse.
+2. Import the project as an existing Maven project.
+3. Confirm that `pom.xml` is detected.
+4. Make sure Java 17 is configured.
+5. Run `PortfolioRiskPlatformApplication.java` as a Spring Boot application.
+
+---
+
+## VS Code Setup
+
+The project can also be opened directly in VS Code.
+
+Recommended VS Code extensions:
+
+- Extension Pack for Java
+- Spring Boot Extension Pack
+- Docker
+- GitLens
+
+Open the project:
+
+    code .
+
+Run tests:
+
+    ./mvnw clean test
+
+Run the application:
+
+    ./mvnw spring-boot:run
+
+---
+
 ## Continuous Integration
 
 This project uses GitHub Actions.
@@ -391,48 +543,19 @@ The CI status is shown by the badge at the top of this README.
 
 ---
 
-## Key Features
+## Future Improvements
 
-- RESTful API design
-- Layered Spring Boot architecture
-- Controller, service, repository, DTO, and entity separation
-- JPA-based database persistence
-- PostgreSQL runtime persistence
-- H2-based test persistence
-- CSV import services
-- Spring Batch import runner
-- Scheduled backend jobs
-- Import audit logging
-- Rejected record logging
-- Report summary API
-- Dockerized backend setup
-- Docker Compose support for backend and database
-- GitHub Actions CI pipeline
+Planned future improvements:
 
----
-
-## Role in the Mega Fintrade Platform
-
-This repository is Project 1 of the Mega Fintrade Platform.
-
-Its long-term purpose is to become the central Java backend service that will:
-
-- Store portfolio positions
-- Store quant import results
-- Store strategy signals
-- Store backtest results
-- Store portfolio equity curve data
-- Store import audit history
-- Store rejected import rows
-- Expose portfolio summary APIs
-- Expose risk reporting APIs
-- Provide data to the future C# monitoring service
-
-Future integrations will connect this backend with:
-
-- `mega-fintrade-quant-engine`
-- `mega-fintrade-market-engine-cpp`
-- future Mega Fintrade monitoring service
+- Normalize strategy signals into one row per date and symbol.
+- Support dynamic stock universes from Project 2.
+- Add pagination to audit and rejection endpoints.
+- Add cleaner API error responses for failed imports.
+- Add authentication and role-based access control.
+- Add OpenAPI / Swagger documentation.
+- Add production deployment configuration.
+- Add monitoring service integration.
+- Add frontend dashboard integration.
 
 ---
 
