@@ -68,11 +68,11 @@ Main responsibility of each layer:
 
 ### Get all positions
 
-    GET /positions
+    GET /api/positions
 
 ### Create one position
 
-    POST /positions
+    POST /api/positions
 
 Example request body:
 
@@ -84,7 +84,7 @@ Example request body:
 
 ### Create positions in batch
 
-    POST /positions/batch
+    POST /api/positions/batch
 
 Example request body:
 
@@ -103,19 +103,19 @@ Example request body:
 
 ### Get position by ID
 
-    GET /positions/{id}
+    GET /api/positions/{id}
 
 Example:
 
-    GET /positions/1
+    GET /api/positions/1
 
 ### Calculate profit and loss
 
-    GET /positions/{id}/pnl/{price}
+    GET /api/positions/{id}/pnl/{price}
 
 Example:
 
-    GET /positions/1/pnl/160
+    GET /api/positions/1/pnl/160
 
 ---
 
@@ -133,7 +133,7 @@ The application runs on:
 
 Example endpoint:
 
-    http://localhost:8080/positions
+    http://localhost:8080/api/positions
 
 ### Option 2: Run with Docker Compose
 
@@ -143,7 +143,7 @@ Build and start the application:
 
 Then access:
 
-    http://localhost:8080/positions
+    http://localhost:8080/api/positions
 
 ---
 

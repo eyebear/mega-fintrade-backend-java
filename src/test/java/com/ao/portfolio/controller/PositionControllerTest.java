@@ -1,17 +1,16 @@
 package com.ao.portfolio.controller;
 
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -31,7 +30,7 @@ public class PositionControllerTest {
                 }
                 """;
 
-        mockMvc.perform(post("/positions")
+        mockMvc.perform(post("/api/positions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isOk())
@@ -50,7 +49,7 @@ public class PositionControllerTest {
                 }
                 """;
 
-        mockMvc.perform(post("/positions")
+        mockMvc.perform(post("/api/positions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isBadRequest());
@@ -58,7 +57,7 @@ public class PositionControllerTest {
 
     @Test
     void getMissingPosition_shouldReturnNotFound() throws Exception {
-        mockMvc.perform(get("/positions/999999"))
+        mockMvc.perform(get("/api/positions/999999"))
                 .andExpect(status().isNotFound());
     }
 }

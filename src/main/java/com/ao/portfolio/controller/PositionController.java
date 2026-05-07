@@ -17,7 +17,7 @@ import com.ao.portfolio.service.PositionService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/positions")
+@RequestMapping("/api/positions")
 public class PositionController {
 
     private final PositionService positionService;
