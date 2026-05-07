@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ao.portfolio.entity.ImportRejection;
 import com.ao.portfolio.repository.ImportRejectionRepository;
@@ -17,6 +19,7 @@ public class ImportRejectionService {
         this.importRejectionRepository = importRejectionRepository;
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ImportRejection logRejection(String fileName, int lineNumber, String rawRecord, String reason) {
         ImportRejection rejection = new ImportRejection(
                 fileName,

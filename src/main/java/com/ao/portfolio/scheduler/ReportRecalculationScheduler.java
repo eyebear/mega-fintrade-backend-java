@@ -2,6 +2,7 @@ package com.ao.portfolio.scheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +10,11 @@ import com.ao.portfolio.dto.ReportSummaryResponse;
 import com.ao.portfolio.service.ReportSummaryService;
 
 @Component
+@ConditionalOnProperty(
+        name = "app.scheduling.enabled",
+        havingValue = "true",
+        matchIfMissing = true
+)
 public class ReportRecalculationScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(ReportRecalculationScheduler.class);
