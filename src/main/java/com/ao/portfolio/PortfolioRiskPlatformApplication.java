@@ -2,12 +2,13 @@ package com.ao.portfolio;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 public class PortfolioRiskPlatformApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(PortfolioRiskPlatformApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(PortfolioRiskPlatformApplication.class, args);
+    }
 }
