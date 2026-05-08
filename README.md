@@ -16,13 +16,13 @@ The purpose of this project is to provide a production-style Java backend for a 
 
 In the Mega Fintrade Platform, this backend is responsible for:
 
-- Receiving processed quant output files from the Python quant engine.
-- Persisting imported risk, strategy, backtest, and equity curve data.
-- Providing REST APIs for portfolio data and financial reports.
-- Running scheduled import and report refresh jobs.
-- Recording audit history for import runs.
-- Recording rejected CSV rows for debugging and data quality checks.
-- Providing a stable backend foundation for future dashboard and monitoring services.
+- Receiving processed quant output files from the Python quant engine
+- Persisting imported risk, strategy, backtest, and equity curve data
+- Providing REST APIs for portfolio data and financial reports
+- Running scheduled import and report refresh jobs
+- Recording audit history for import runs
+- Recording rejected CSV rows for debugging and data quality checks
+- Providing a stable backend foundation for future dashboard and monitoring services
 
 This project demonstrates backend engineering skills using Java, Spring Boot, REST APIs, JPA, PostgreSQL, Spring Batch, scheduling, testing, CI, Docker, and Docker Compose.
 
@@ -30,7 +30,7 @@ This project demonstrates backend engineering skills using Java, Spring Boot, RE
 
 ## Role in the Mega Fintrade Platform
 
-The Mega Fintrade Platform is designed as a multi-language, multi-service financial system.
+Mega Fintrade is designed as a multi-language, multi-service financial system.
 
 This repository is:
 
@@ -38,24 +38,27 @@ This repository is:
 
 Its role is to act as the central backend.
 
-Other related projects include:
+Related projects:
 
 | Project | Repository / Purpose |
 |---|---|
 | Project 1 | Java backend for storage, import, reporting, scheduling, and APIs |
 | Project 2 | Python quantitative backtesting and analytics engine |
 | Project 3 | C++ market data processing engine |
-| Project 4 | Future C# monitoring and alerting service |
+| Project 4 | C#/.NET monitoring and alerting service |
+| Project 5 | Future AI advisor and decision-support service |
 
-The intended data flow is:
+Intended data flow:
 
     Project 3 C++ market engine
-        ↓
+      ↓
     Project 2 Python quant engine
-        ↓
+      ↓
     Project 1 Java backend
-        ↓
-    Project 4 monitoring / dashboard services
+      ↓
+    Project 4 monitoring / dashboard service
+      ↓
+    Future Project 5 AI advisor
 
 At the current stage, Project 1 consumes CSV files produced by Project 2.
 
@@ -65,7 +68,7 @@ At the current stage, Project 1 consumes CSV files produced by Project 2.
 
 - Java 17
 - Spring Boot 4
-- Spring Web
+- Spring Web MVC
 - Spring Data JPA
 - Hibernate
 - Spring Batch
@@ -148,7 +151,9 @@ These files are expected to come from:
 
     mega-fintrade-quant-engine
 
-The current strategy signal import is scoped to the configured Project 2 symbol universe. Dynamic symbol support is intentionally left for a future version.
+The current strategy signal import is scoped to the configured Project 2 symbol universe.
+
+Dynamic symbol support is intentionally left for a future version.
 
 For detailed CSV format documentation, see:
 
@@ -312,7 +317,9 @@ Run the application:
 
     ./mvnw spring-boot:run
 
-The project uses Maven Wrapper. Use `./mvnw` instead of relying on a globally installed Maven version.
+The project uses Maven Wrapper.
+
+Use `./mvnw` instead of relying on a globally installed Maven version.
 
 ---
 
@@ -342,14 +349,16 @@ Run tests:
 
 ## Docker Runtime
 
-This project supports Docker-based runtime packaging. Docker Compose starts both the Spring Boot backend and a PostgreSQL database.
+This project supports Docker-based runtime packaging.
+
+Docker Compose starts both the Spring Boot backend and a PostgreSQL database.
 
 ### Docker Services
 
 | Service | Description | Host URL / Port |
 |---|---|---|
-| Backend | Spring Boot Java backend | http://localhost:8080 |
-| PostgreSQL | Dockerized PostgreSQL database | localhost:5433 |
+| Backend | Spring Boot Java backend | `http://localhost:8080` |
+| PostgreSQL | Dockerized PostgreSQL database | `localhost:5433` |
 
 Inside Docker Compose, the backend connects to PostgreSQL using the service name `postgres`:
 
@@ -547,21 +556,33 @@ The CI status is shown by the badge at the top of this README.
 
 Planned future improvements:
 
-- Normalize strategy signals into one row per date and symbol.
-- Support dynamic stock universes from Project 2.
-- Add pagination to audit and rejection endpoints.
-- Add cleaner API error responses for failed imports.
-- Add authentication and role-based access control.
-- Add OpenAPI / Swagger documentation.
-- Add production deployment configuration.
-- Add monitoring service integration.
-- Add frontend dashboard integration.
+- Normalize strategy signals into one row per date and symbol
+- Support dynamic stock universes from Project 2
+- Add pagination to audit and rejection endpoints
+- Add cleaner API error responses for failed imports
+- Add authentication and role-based access control
+- Add OpenAPI / Swagger documentation
+- Add production deployment configuration
+- Add monitoring service integration
+- Add frontend dashboard integration
 
 ---
 
 ## Repository
 
 Repository URL:
+
+    https://github.com/eyebear/mega-fintrade-backend-java
+
+---
+
+## Author
+
+Developed by Ao Ao Feng.
+
+This project is part of the Mega Fintrade Platform portfolio, a multi-service financial data engineering, quantitative analytics, backend ETL, and risk reporting system built with Java, Python, C++, and C#/.NET.
+
+Repository:
 
     https://github.com/eyebear/mega-fintrade-backend-java
 
